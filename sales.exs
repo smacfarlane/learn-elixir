@@ -1,4 +1,9 @@
 #Exercise: StringsAndBinaries-7
+#Exercies: Records-1  *Updated*
+
+defrecord Sale, id: nil, ship_to: nil, net_amount: nil, tax_amount: nil
+
+
 defmodule SalesCSV do
   def read(file) do
     file = File.open!(file)
@@ -18,7 +23,7 @@ defmodule SalesCSV do
   end
 
   defp create_row headers, line do
-    Enum.zip(headers, csv_to_list_and_map(line, &(entry_to_value(&1))))
+    Sale.new Enum.zip(headers, csv_to_list_and_map(line, &(entry_to_value(&1))))
   end
 
   defp entry_to_value value do
@@ -33,12 +38,17 @@ end
 
 
 defmodule Tax do
-  def orders_with_total orders, taxes do
-    orders |> Enum.map &(apply_taxes(&1,taxes))
+  def orders_with_tax orders, taxes do
+    orders |> Enum.map &(apply_tax(&1,taxes))
+  end
+  
+  def apply_tax([], _), do: []
+  def apply_tax(sale, taxes) do
+    tax_amount = Keyword.get(taxes, sale.ship_to, 0.0)
+    Sale.new id: sale.id, ship_to: sale.ship_to, net_amount: sale.net_amount, tax_amount: tax_amount
   end
 
-
-  def apply_taxes order=[id: _, ship_to: state, net_amount: net], taxes do
+  def calculate_total order=[id: _, ship_to: state, net_amount: net], taxes do
     rate = Keyword.get(taxes, state, 0)
     tax = net * rate
     total = net + tax
