@@ -4,13 +4,16 @@ defmodule Issues.Mixfile do
   def project do
     [ app: :issues,
       version: "0.0.1",
-      elixir: "~> 0.10.3",
+      elixir: "~> 0.11.1",
       deps: deps ]
   end
 
   # Configuration for the OTP application
   def application do
-    [mod: { Issues, [] }]
+    [
+      mod: { Issues, [] },
+      applications: [:httpotion]
+    ]
   end
 
   # Returns the list of dependencies in the format:
