@@ -21,14 +21,9 @@ defmodule Stack.Server do
     { :reply, head, tail }
   end
 
-  def handle_cast({:push, value}, list) when value < 10 do
-    System.halt(value)
-  end
-
   def handle_cast({:push, value}, list) do
     { :noreply, [value | list]}
   end
-
 
   def terminate reason, state do
     IO.puts "Terminating because #{inspect reason}."
