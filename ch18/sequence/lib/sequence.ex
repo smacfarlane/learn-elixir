@@ -3,8 +3,9 @@ defmodule Sequence do
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
-  def start(_type, initial_number) do
-    {:ok, _pid} = Sequence.Supervisor.start_link(Application.get_env(:sequence, :initial_number))
+  def start(_type, _initial_number) do
+    initial_number = Application.get_env(:sequence, :initial_number)
+    {:ok, _pid} = Sequence.Supervisor.start_link(initial_number)
     # import Supervisor.Spec, warn: false
     #
     # children = [

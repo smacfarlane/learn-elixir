@@ -19,9 +19,17 @@ defmodule Sequence.Server do
     GenServer.cast __MODULE__, {:increment_number, delta}
   end
 
+
   def init(stash_pid) do
-    current_number = Sequence.Stash.get_value stash_pid
-    { :ok, %State{current_number: current_number, stash_pid: stash_pid} }
+    {current_number, delta} = Sequence.Stash.get_state stash_pid
+    {
+      :ok,
+      %State{
+        current_number: current_number,
+        delta: delta,
+        stash_pid: stash_pid
+      }
+    }
   end
 
   def handle_call(:next_number, _from, state) do
@@ -35,11 +43,12 @@ defmodule Sequence.Server do
   def handle_cast({:increment_number, delta}, state) do
     {
       :noreply,
-      %{ state | current_number: state.current_number + delta , delta: delta}}
+      %{ state | current_number: state.current_number + delta , delta: delta}
+    }
   end
 
   def terminate(_reason, state) do
-    Sequence.Stash.save_value state.stash_pid, state.current_number
+    Sequence.Stash.save_state state.stash_pid, state.current_number, state.delta
   end
 
   def code_change("0", old_state = {current_number, stash_pid}, _extra) do
