@@ -16,7 +16,7 @@ defmodule Sequence.Mixfile do
   def application do
     [applications: [:logger],
      mod: {Sequence, []},
-     env: [initial_number: 456]
+     env: [initial_number: 456],
      registered: [ :sequence ]]
   end
 
